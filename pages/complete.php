@@ -32,6 +32,21 @@ try {
     $pstmt = $pdo->prepare($sql);
     // SQLを実行
     $pstmt->execute($params);
+  } elseif ($action === "update") {
+    /* 更新処理 */
+    // 実行するSQLを設定
+    $sql = "update product set category = :category, name = :name, price = :price, detail = :detail where id = :id";
+    // リクエストパラメータをプレースホルダに設定する連想配列の設定
+    $params = [];
+    $params[":id"] = $product->getId();
+    $params[":category"] = $product->getCategory();
+    $params[":name"] = $product->getName();
+    $params[":price"] = $product->getPrice();
+    $params[":detail"] = $product->getDetail();
+    // SQl実行オブジェクトを取得
+    $pstmt = $pdo->prepare($sql);
+    // SQLを実行
+    $pstmt->execute($params);
   }
   
 } catch (PDOException $e) {

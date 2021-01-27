@@ -66,7 +66,7 @@ try {
 			<td><?= $product->getId() ?></td>
 			<td><?= $product->getCategory() ?></td>
 			<td><?= $product->getName() ?></td>
-			<td>&yen;4100</td>
+			<td>&yen;<?= $product->getPrice() ?></td>
 			<td class="buttons">
 				<form name="inputs">
 					<input type="hidden" name="id" value="<?= $product->getId() ?>" />
