@@ -1,8 +1,8 @@
 <?php
-// データベース接続情報文字列
-$dsn = "mysql:host=localhost;dbname=productdb;charset=utf8";
-$user = "productdb_admin";
-$password = "admin123";
+// 外部ファイルの読み込み
+require_once("./common/db.php");
+?>
+<?php
 // データベース接続関連オブジェクトの初期化
 $pdo = null;
 $pstmt = null;
@@ -11,7 +11,7 @@ $pstmt = null;
  */
 try {
   // データベースに接続
-  $pdo = new PDO($dsn, $user, $password);
+  $pdo = connectDB();
   // 実行するSQLを設定
   $sql = "select * from product";
   // SQL実行オブジェクトを取得
