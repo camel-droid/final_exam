@@ -12,6 +12,9 @@ isset($_REQUEST["price"]) ? $price = $_REQUEST["price"] : $price = "";
 isset($_REQUEST["detail"]) ? $detail = $_REQUEST["detail"] : $detail = "";
 // 商品クラスのインスタンス化
 $product = new Product($id, $category, $name, $price, $detail);
+// セッションに登録
+session_start();
+$_SESSION["product"] = $product;
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -53,11 +56,6 @@ $product = new Product($id, $category, $name, $price, $detail);
 		<tr class="buttons">
 			<td colspan="2">
 				<form name="inputs">
-				  <input type="hidden" name="id" value="<?= $product->getId() ?>">
-				  <input type="hidden" name="category" value="<?= $product->getCategory() ?>">
-				  <input type="hidden" name="name" value="<?= $product->getName() ?>">
-				  <input type="hidden" name="price" value="<?= $product->getPrice() ?>">
-				  <input type="hidden" name="detail" value="<?= $product->getDetail() ?>">
 					<button formaction="complete.php" formmethod="post" name="action" value="<?= $action ?>">実行する</button>
 				</form>
 			</td>

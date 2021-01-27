@@ -6,13 +6,11 @@ require_once("./common/Product.php");
 <?php
 // リクエストパラメータの取得
 isset($_REQUEST["action"]) ? $action = $_REQUEST["action"] : $action = "";
-isset($_REQUEST["id"]) ? $id = $_REQUEST["id"] : $id = 0;
-isset($_REQUEST["category"]) ? $category = $_REQUEST["category"] : $category = "";
-isset($_REQUEST["name"]) ? $name = $_REQUEST["name"] : $name = "";
-isset($_REQUEST["price"]) ? $price = $_REQUEST["price"] : $price = "";
-isset($_REQUEST["detail"]) ? $detail = $_REQUEST["detail"] : $detail = "";
-// 商品クラスのインスタンス化
-$product = new Product($id, $category, $name, $price, $detail);
+// セッションの取得
+session_start();
+$product = $_SESSION["product"];
+// セッションの破棄
+unset($_SESSION["product"]);
 // データベース接続関連オブジェクトを初期化
 $pdo = null;
 $pstmt = null;
