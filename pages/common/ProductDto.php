@@ -3,7 +3,7 @@
 /**
  * 商品を管理するクラス：productテーブルの1レコードを管理するクラス
  */
-class Product {
+class ProductDto {
   /**
    * プロパティ
    */
@@ -69,6 +69,20 @@ class Product {
   
   function getDetail():string {
     return $this->detail;
+  }
+  
+  /**
+   * シリアライズ化
+   * @return string シリアライズ化された文字列：書式「[プロパティ名]プロパティ値」を連結文字「:」で連結した文字列
+   */
+  function toString():string {
+    $toString = "";
+    $toString .= "[id]{$this->id}:";
+    $toString .= "[category]{$this->category}:";
+    $toString .= "[name]{$this->name}:";
+    $toString .= "[price]{$this->price}:";
+    $toString .= "[detail]{$this->detailid}";
+    return $toString;
   }
   
 }
