@@ -49,9 +49,13 @@ class ProductService {
 				break;
 			case "entry":
 				if (is_null($this->mode)) {
+					$parameters["action"] = $this->action;
+					$parameters["mode"] = "confirm";
+					$_SESSION["parameters"] = $parameters;
 					$page = "entry.php";
 				} elseif ($this->mode === "confirm") {
 					$parameters["action"] = $this->action;
+					$parameters["mode"] = "complete";
 					$parameters["product"] = $this->getInstanceProduct();
 					$_SESSION["parameters"] = $parameters;
 					$page = "confirm.php";
@@ -59,20 +63,22 @@ class ProductService {
 					$parameters = $_SESSION["parameters"];
 					$dao->insert($parameters["product"]);
 					$page = "complete.php";
-					unset($_SESSION["action"]);
-					unset($_SESSION["product"]);
+					unset($_SESSION["parameters"]);
+					unset($_SESSION);
 				}
 				return $page;
 				break;
 			case "update":
 				if (is_null($this->mode)) {
 					$product = $dao->findById($this->parameters["id"]);
-					$this->parameters["action"] = $this->action;
-					$this->parameters["product"] = $product;
-					$_SESSION["parameters"] = $this->parameters;
+					$parameters["action"] = $this->action;
+					$parameters["mode"] = "confirm";
+					$parameters["product"] = $product;
+					$_SESSION["parameters"] = $parameters;
 					$page = "update.php";
 				} elseif ($this->mode === "confirm") {
 					$parameters["action"] = $this->action;
+					$parameters["mode"] = "complete";
 					$parameters["product"] = $this->getInstanceProduct();
 					$_SESSION["parameters"] = $parameters;
 					$page = "confirm.php";
@@ -80,17 +86,18 @@ class ProductService {
 					$parameters = $_SESSION["parameters"];
 					$dao->update($parameters["product"]);
 					$page = "complete.php";
-					unset($_SESSION["action"]);
-					unset($_SESSION["product"]);
+					unset($_SESSION["parameters"]);
+					unset($_SESSION);
 				}
 				return $page;
 				break;
 			case "delete":
 				if (is_null($this->mode)) {
 					$product = $dao->findById($this->parameters["id"]);
-					$this->parameters["action"] = $this->action;
-					$this->parameters["product"] = $product;
-					$_SESSION["parameters"] = $this->parameters;
+					$parameters["action"] = $this->action;
+					$parameters["mode"] = "complete";
+					$parameters["product"] = $product;
+					$_SESSION["parameters"] = $parameters;
 					$page = "confirm.php";
 				} elseif ($this->mode === "complete") {
 					$parameters = $_SESSION["parameters"];

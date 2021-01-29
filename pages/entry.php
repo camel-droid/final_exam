@@ -1,3 +1,15 @@
+<?php
+// セッションの開始
+session_start();
+// セッションからパラメータを取得
+$parameters = $_SESSION["parameters"];
+$action = $parameters["action"];
+$mode = $parameters["mode"];
+/*
+isset($_SESSION["parameters"]["action"]) ? $action = (string) $_SESSION["parameters"]["action"] : $action = "";
+isset($_SESSION["parameters"]["mode"]) ? $mode = (string) $_SESSION["parameters"]["mode"] : $mode = "";
+*/
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -38,8 +50,8 @@
 			</tr>
 			<tr class="buttons">
 				<td colspan="2">
-					<input type="hidden" name="action" value="entry" />
-					<input type="hidden" name="mode" value="confirm" />
+					<input type="hidden" name="action" value="<?= $action ?>" />
+					<input type="hidden" name="mode" value="<?= $mode ?>" />
 					<button formaction="index.php" formmethod="post">確認画面へ</button>
 				</td>
 			</tr>

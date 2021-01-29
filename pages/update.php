@@ -7,20 +7,9 @@ require_once(dirname(__DIR__)."/application/dto/ProductDTO.php");
 session_start();
 // セッションからパラメータを取得
 $parameters = $_SESSION["parameters"];
-// セッションの破棄
 $action = (string) $parameters["action"];
+$mode = (string) $parameters["mode"];
 $product = $parameters["product"];
-
-/*
-// リクエストパラメータを取得
-isset($_REQUEST["action"]) ? $action = $_REQUEST["action"] : $action = "";
-isset($_REQUEST["id"]) ? $id = $_REQUEST["id"] : $id = 0;
-// データベース接続関連オブジェクトの初期化
-$pdo = null;
-$pstmt = null;
-$dao = new ProductDao();
-$product = $dao->findById($id);
-*/
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -71,7 +60,7 @@ $product = $dao->findById($id);
 			<tr class="buttons">
 				<td colspan="2">
 					<input type="hidden" name="action" value="<?= $action ?>" />
-					<input type="hidden" name="mode" value="confirm" />
+					<input type="hidden" name="mode" value="<?= $mode ?>" />
 					<button formaction="index.php" formmethod="post">確認画面へ</button>
 				</td>
 			</tr>

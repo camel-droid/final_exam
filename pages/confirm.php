@@ -8,6 +8,7 @@ session_start();
 // セッションからパラメータを取得
 $parameters = $_SESSION["parameters"];
 $action = (string) $parameters["action"];
+$mode = (string) $parameters["mode"];
 $product = $parameters["product"];
 ?>
 <!DOCTYPE html>
@@ -51,7 +52,7 @@ $product = $parameters["product"];
 			<td colspan="2">
 				<form name="inputs">
 					<input type="hidden" name="action" value="<?= $action ?>" />
-					<input type="hidden" name="mode" value="complete" />
+					<input type="hidden" name="mode" value="<?= $mode ?>" />
 					<button formaction="index.php" formmethod="post">実行する</button>
 				</form>
 			</td>
