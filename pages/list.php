@@ -1,12 +1,14 @@
 <?php
 // 外部ファイルの読み込み
-require_once("./common/db.php");
-require_once("./common/ProductDao.php");
-require_once("./common/ProductDto.php");
+require_once(dirname(__DIR__)."/application/dto/ProductDTO.php");
 ?>
 <?php
-$dao = new ProductDao();
-$products = $dao->findAll();
+// セッション開始
+session_start();
+// セッションからパラメータを取得
+$products = $_SESSION["products"];
+// セッションの破棄
+unset($_SESSION);
 ?>
 <!DOCTYPE html>
 <html lang="ja">

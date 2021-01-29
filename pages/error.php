@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 	<meta charset="UTF-8">
-	<title>商品データベース</title>
+	<title>エラー - 商品データベース</title>
 	<link rel="stylesheet" href="../assets/css/style.css" />
 </head>
 <body>
@@ -10,9 +10,10 @@
 	<h1>商品データベース</h1>
 </header>
 <main id="index">
-	<h2>商品データベースの処理</h2>
+	<h2>エラーが発生しました</h2>
+	<p><a href="top.php">トップページへ戻る</a></p>
 	<ul>
-		<li><a href="index.php?action=list">商品一覧</a></li>
+		<li><a href="list.php">商品一覧</a></li>
 		<li><a href="entry.php">商品登録</a></li>
 	</ul>
 </main>
