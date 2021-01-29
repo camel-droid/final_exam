@@ -1,7 +1,8 @@
 <?php
 // 外部ファイルの読み込み
 require_once("./common/db.php");
-require_once("./common/Product.php");
+require_once("./common/ProductDao.php");
+require_once("./common/ProductDto.php");
 ?>
 <?php
 // リクエストパラメータの取得
@@ -11,27 +12,14 @@ session_start();
 $product = $_SESSION["product"];
 // セッションの破棄
 unset($_SESSION["product"]);
-// データベース接続関連オブジェクトを初期化
-$pdo = null;
-$pstmt = null;
+$dao = new ProductDao();
 try {
   // データベース接続オブジェクトを取得
   $pdo = connectDB();
   // リクエストパラメータのactionキーによって処理を分岐
   if ($action === "entry") {
     /* 新規追加処理 */
-    // 実行するSQLを設定
-    $sql = "insert into product (category, name, price, detail) values (:category, :name, :price, :detail)";
-    // リクエストパラメータをプレースホルダに設定する連想配列の設定
-    $params = [];
-    $params[":category"] = $product->getCategory();
-    $params[":name"] = $product->getName();
-    $params[":price"] = $product->getPrice();
-    $params[":detail"] = $product->getDetail();
-    // SQl実行オブジェクトを取得
-    $pstmt = $pdo->prepare($sql);
-    // SQLを実行
-    $pstmt->execute($params);
+    $dao->insert($product);
   } elseif ($action === "update") {
     /* 更新処理 */
     // 実行するSQLを設定

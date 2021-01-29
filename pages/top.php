@@ -1,6 +1,3 @@
-<?php
-require_once("./common/Constants.php");
-?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -14,7 +11,6 @@ require_once("./common/Constants.php");
 </header>
 <main id="index">
 	<h2>商品データベースの処理</h2>
-	<?= Constants::PAGES_DIR ?>
 	<ul>
 		<li><a href="list.php">商品一覧</a></li>
 		<li><a href="entry.php">商品登録</a></li>

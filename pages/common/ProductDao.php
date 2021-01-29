@@ -1,16 +1,23 @@
 <?php
 // 外部ファイルの読み込み
-require_once("./ProductDto.php");
+require_once(__DIR__."/ProductDto.php");
 ?>
 <?php
 class ProductDao {
   /**
-   * クラス定数：データベース接続情報
+   * クラス定数
    */
+  /* データベース接続情報 */
   const DB_DSN = "mysql:host=localhost;dbname=productdb;charset=utf8";
-  const DB_USER = "productsb_admin";
+  const DB_USER = "productdb_admin";
   const DB_PASSWORD = "admin123";
-  
+  /* SQL文字列 */
+  const SQL_FIND = "select * from product";
+  const SQL_FIND_BY_ID = self::SQL_FIND." where id = ?";
+  const SQL_INSERT = "insert into product (category, name, price, detail) values (:category, :name, :price, :detail)";
+  const SQL_UPDATE = "update product set category = :category, name = :name, price = :price, detail = :detail where id = :id";
+  const SQL_DELETE_BY_ID = "delete from product where id = ?";
+
   /**
    * プロパティ
    */
@@ -24,8 +31,6 @@ class ProductDao {
       $this->pdo = new PDO(self::DB_DSN, self::DB_USER, self::DB_PASSWORD);  
     } catch (PDOException $e) {
       die($e->getMessage());
-    } finally {
-      unset($this->pdo);
     }
   }
   
@@ -39,24 +44,13 @@ class ProductDao {
     $records = [];
     /* 全件検索処理の実行 */
     try {
-      // 実行するSQLの設定
-      $sql = "select * from product";
       // SQL実行オブジェクトを取得
-      $pstmt = $this->pdo->prepare($sql);
+      $pstmt = $this->pdo->prepare(self::SQL_FIND);
       // SQLの実行と結果セットの取得
       $pstmt->execute();
       $records = $pstmt->fetchAll(PDO::FETCH_ASSOC);
       // 結果セットから商品クラスの配列に入れ替え
-      $products = [];
-      foreach ($records as $record) {
-        $id = $record["id"];
-        $category = $record["category"];
-        $name = $record["id"];
-        $price = $record["price"];
-        $detail = $record["detail"];
-        $product = new ProductDto($id, $category, $name, $price, $detail);
-        $products[] = $product;
-      }
+      $products = $this->convertToDtos($records);
       return $products;
     } catch (PDOException $e) {
       die($e->getMessage());
@@ -64,22 +58,48 @@ class ProductDao {
       unset($pstmt);
     }
   }
+
+  /**
+   * 結果セットをDTOクラスのインスタンスの配列に変換する。
+   * @param array 結果セット
+   * @return array 変換されたDTOクラスのインスタンスの配列
+   */
+  private function convertToDtos(array $records):array {
+    foreach ($records as $record) {
+      $product = $this->convertToDto($record);
+      $products[] = $product;
+    }
+    return $products;
+  }
   
+  /**
+   * 結果セットの1レコードをDTOクラスのインスタンスに変換する。
+   * @param 結果セットの1レコード：フィールド名をキーとする連想配列
+   * @return ProductDto 変換されたDTOクラスのインスタンス
+   */
+  private function convertToDto(array $record):ProductDto {
+    $id = $record["id"];
+    $category = $record["category"];
+    $name = $record["name"];
+    $price = $record["price"];
+    $detail = $record["detail"];
+    $product = new ProductDto($id, $category, $name, $price, $detail);
+    return $product;
+  }
+
   /**
    * 商品ID検索を実行する。
    * @param int 商品ID
    * @return Product|null 商品IDに合致する商品がある場合はそのProductクラスのインスタンス、それ以外の場合はnull
    */
-  function findById(int $id):Product {
+  function findById(int $id):ProductDto {
     // SQL実行オブジェクトと結果セットの初期化
     $pstmt = null;
     $records = [];
     /* 商品ID検索処理の実行 */
     try {
-      // 実行するSQLの設定
-      $sql = "select * from product where id = ?";
       // SQL実行オブジェクトを取得
-      $pstmt = $this->pdo->prepare($sql);
+      $pstmt = $this->pdo->prepare(self::SQL_FIND_BY_ID);
       // プレースホルダにパラメータを設定
       $pstmt->bindValue(1, $id);
       // SQLの実行と結果セットの取得
@@ -88,12 +108,7 @@ class ProductDao {
       // 結果セットから商品クラスをインスタンス化
       $product = null;
       if (count($records) > 0) {
-        $id = $records[0]["id"];
-        $category = $records[0]["category"];
-        $name = $records[0]["name"];
-        $price = $records[0]["price"];
-        $detail = $records[0]["detail"];
-       $product = new ProductDto($id, $category, $name, $price, $detail);
+        $product = $this->convertToDto($records[0]);
       }
       return $product;
     } catch (PDOException $e) {
@@ -112,16 +127,10 @@ class ProductDao {
     $pstmt = null;
     /* 新規追加処理の実行 */
     try {
-      // 実行するSQLの設定
-      $sql = "insert into product (category, name, price, detail) values (:category, :name, :price, :detail)";
       // プレースホルダに設定するパラメータの連想配列を設定
-      $params = [];
-      $params[":category"] = $product->getCategory();
-      $params[":name"] = $product->getName();
-      $params[":price"] = $product->getPrice();
-      $params[":detail"] = $product->getDetail();
+      $params = $this->createPrametersBy($product);
       // SQL実行オブジェクトを取得
-      $pstmt = $this->pdo->prepare($sql);
+      $pstmt = $this->pdo->prepare(self::SQL_INSERT);
       // SQLの実行
       $pstmt->execute($params);
     } catch (PDOException $e) {
@@ -130,6 +139,16 @@ class ProductDao {
       unset($pstmt);
     }
   }
+
+  private function createPrametersBy(ProductDto $product, ?string $foruse = null):array {
+    $params = [];
+    if (!is_null($foruse)) $params[":id"] = $product->getId(); 
+    $params[":category"] = $product->getCategory();
+    $params[":name"] = $product->getName();
+    $params[":price"] = $product->getPrice();
+    $params[":detail"] = $product->getDetail();
+    return $params;
+}
   
   /**
    * Productテーブルにレコードを更新する。
@@ -141,14 +160,8 @@ class ProductDao {
     /* 更新処理の実行 */
     try {
       // 実行するSQLの設定
-      $sql = "update product set category = :category, name = :name, price = :price, detail = :detail where id = :id";
       // プレースホルダに設定するパラメータの連想配列を設定
-      $params = [];
-      $params[":id"] = $product->getId();
-      $params[":category"] = $product->getCategory();
-      $params[":name"] = $product->getName();
-      $params[":price"] = $product->getPrice();
-      $params[":detail"] = $product->getDetail();
+      $params = $this->createPrametersBy($product, "for_upate");
       // SQL実行オブジェクトを取得
       $pstmt = $this->pdo->prepare($sql);
       // SQLの実行
@@ -165,10 +178,8 @@ class ProductDao {
     $pstmt - null;
     /* 削除処理の実行 */
     try {
-      // 実行するSQLの設定
-      $sql = "delete from product where id = ?";
       // SQL実行オブジェクトを取得
-      $pstmt = $this->pdo->prepare($sql);
+      $pstmt = $this->pdo->prepare(self::SQL_DELETE);
       // プレースホルダをパラメータを設定
       $pstmt->bindValue(1, $id);
       // SQLの実行

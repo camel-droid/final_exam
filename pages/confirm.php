@@ -1,7 +1,8 @@
 <?php
 // 外部ファイルの読み込み
 require_once("./common/db.php");
-require_once("./common/Product.php");
+require_once("./common/ProductDao.php");
+require_once("./common/ProductDto.php");
 ?>
 <?php
 // リクエストパラメータを取得
@@ -16,39 +17,11 @@ if ($action !== "delete") {
   isset($_REQUEST["price"]) ? $price = $_REQUEST["price"] : $price = "";
   isset($_REQUEST["detail"]) ? $detail = $_REQUEST["detail"] : $detail = "";
   // 商品クラスのインスタンス化
-  $product = new Product($id, $category, $name, $price, $detail);
+  $product = new ProductDto($id, $category, $name, $price, $detail);
 } else {
-  // 削除処理の場合：商品のID検索
-  // データベース接続関連オブジェクトの初期化
-  $pdo = null;
-  $pstmt = null;
-  try {
-    // データベース接続オブジェクトを取得
-    $pdo = connectDB();
-    // SQLの設定
-    $sql = "select * from product where id = ?";
-    // SQL実行オブジェクトを取得
-    $pstmt = $pdo->prepare($sql);
-    // プレースホルダにリクエストパラメータを設定
-    $pstmt->bindValue(1, $id);
-    // SQLの実行と結果セットの取得
-    $pstmt->execute();
-    $records = $pstmt->fetchAll(PDO::FETCH_ASSOC);
-    $product = null;
-    if (count($records) > 0) {
-      $category = $records[0]["category"];
-      $name = $records[0]["name"];
-      $price = $records[0]["price"];
-      $detail = $records[0]["detail"];
-      $product = new Product($id, $category, $name, $price, $detail);
-    }
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-    die;
-  } finally {
-    unset($pstmt);
-    unset($pdo);
-  }
+	// 削除処理の場合：商品のID検索
+	$dao = new ProductDao();
+	$product = $dao->findById($id);
 }
 
 // セッションに登録

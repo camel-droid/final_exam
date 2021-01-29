@@ -1,43 +1,12 @@
 <?php
 // 外部ファイルの読み込み
 require_once("./common/db.php");
-require_once("./common/Product.php");
+require_once("./common/ProductDao.php");
+require_once("./common/ProductDto.php");
 ?>
 <?php
-// データベース接続関連オブジェクトの初期化
-$pdo = null;
-$pstmt = null;
-/**
- * データベースからの全件検索
- */
-try {
-  // データベースに接続
-  $pdo = connectDB();
-  // 実行するSQLを設定
-  $sql = "select * from product";
-  // SQL実行オブジェクトを取得
-  $pstmt = $pdo->prepare($sql);
-  // SQLの実行と結果セットの取得
-  $pstmt->execute();
-  $records = $pstmt->fetchAll(PDO::FETCH_ASSOC);
-  // 結果セットを商品の配列に格納
-  $products = [];
-  foreach ($records as $record) {
-    $id = $record["id"];
-    $category = $record["category"];
-    $name = $record["name"];
-    $price = $record["price"];
-    $detail = $record["detail"];
-    $product = new Product($id, $category, $name, $price, $detail);
-    $products[] = $product;
-  }
-} catch (PDOException $e) {
-  echo $e->getMessage();
-  die;
-} finally {
-  unset($pstmt);
-  unset($pdo);
-}
+$dao = new ProductDao();
+$products = $dao->findAll();
 ?>
 <!DOCTYPE html>
 <html lang="ja">
