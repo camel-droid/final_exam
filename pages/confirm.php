@@ -1,32 +1,14 @@
 <?php
 // 外部ファイルの読み込み
-require_once("./common/db.php");
-require_once("./common/ProductDao.php");
-require_once("./common/ProductDto.php");
+require_once(dirname(__dir__)."/application/dto/ProductDTO.php");
 ?>
 <?php
-// リクエストパラメータを取得
-isset($_REQUEST["action"]) ? $action = $_REQUEST["action"] : $action = "";
-isset($_REQUEST["id"]) ? $id = $_REQUEST["id"] : $id = 0;
-
-$product = null;
-if ($action !== "delete") {
-  // リクエストパラメータを取得
-  isset($_REQUEST["category"]) ? $category = $_REQUEST["category"] : $category = "";
-  isset($_REQUEST["name"]) ? $name = $_REQUEST["name"] : $name = "";
-  isset($_REQUEST["price"]) ? $price = $_REQUEST["price"] : $price = "";
-  isset($_REQUEST["detail"]) ? $detail = $_REQUEST["detail"] : $detail = "";
-  // 商品クラスのインスタンス化
-  $product = new ProductDto($id, $category, $name, $price, $detail);
-} else {
-	// 削除処理の場合：商品のID検索
-	$dao = new ProductDao();
-	$product = $dao->findById($id);
-}
-
-// セッションに登録
+// セッション開始
 session_start();
-$_SESSION["product"] = $product;
+// セッションからパラメータを取得
+$parameters = $_SESSION["parameters"];
+$action = (string) $parameters["action"];
+$product = $parameters["product"];
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -68,7 +50,9 @@ $_SESSION["product"] = $product;
 		<tr class="buttons">
 			<td colspan="2">
 				<form name="inputs">
-					<button formaction="complete.php" formmethod="post" name="action" value="<?= $action ?>">実行する</button>
+					<input type="hidden" name="action" value="<?= $action ?>" />
+					<input type="hidden" name="mode" value="complete" />
+					<button formaction="index.php" formmethod="post">実行する</button>
 				</form>
 			</td>
 		</tr>

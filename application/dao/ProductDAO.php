@@ -151,11 +151,11 @@ class ProductDAO extends DAO {
    */
   function delete(int $id):void {
     // SQL実行オブジェクトの初期化
-    $pstmt - null;
+    $pstmt = null;
     /* 削除処理の実行 */
     try {
       // SQL実行オブジェクトを取得
-      $pstmt = $this->pdo->prepare(self::SQL_DELETE);
+      $pstmt = $this->pdo->prepare(self::SQL_DELETE_BY_ID);
       // プレースホルダをパラメータを設定
       $pstmt->bindValue(1, $id);
       // SQLの実行

@@ -13,7 +13,7 @@
 	<h2>商品データベースの処理</h2>
 	<ul>
 		<li><a href="index.php?action=list">商品一覧</a></li>
-		<li><a href="entry.php">商品登録</a></li>
+		<li><a href="index.php?action=entry">商品登録</a></li>
 	</ul>
 </main>
 <footer>

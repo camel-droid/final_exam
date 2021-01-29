@@ -1,28 +1,3 @@
-<?php
-// 外部ファイルの読み込み
-require_once("./common/db.php");
-require_once("./common/ProductDao.php");
-require_once("./common/ProductDto.php");
-?>
-<?php
-// リクエストパラメータの取得
-isset($_REQUEST["action"]) ? $action = $_REQUEST["action"] : $action = "";
-// セッションの取得
-session_start();
-$product = $_SESSION["product"];
-// 処理の実行
-$dao = new ProductDao();
-// 処理の切り替え
-if ($action === "entry") {
-  $dao->inesert($product);
-} elseif ($action === "update") {
-  $dao->update($product);
-} else {
-  $dao->delete($product->getId());
-}
-// セッションの破棄
-unset($_SESSION["product"]);
-?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>

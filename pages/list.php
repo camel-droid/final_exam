@@ -7,8 +7,6 @@ require_once(dirname(__DIR__)."/application/dto/ProductDTO.php");
 session_start();
 // セッションからパラメータを取得
 $products = $_SESSION["products"];
-// セッションの破棄
-unset($_SESSION);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -41,8 +39,8 @@ unset($_SESSION);
 			<td class="buttons">
 				<form name="inputs">
 					<input type="hidden" name="id" value="<?= $product->getId() ?>" />
-					<button formaction="update.php" formmethod="post" name="action" value="update">更新</button>
-					<button formaction="confirm.php" formmethod="post" name="action" value="delete">削除</button>
+					<button formaction="index.php" formmethod="post" name="action" value="update">更新</button>
+					<button formaction="index.php" formmethod="post" name="action" value="delete">削除</button>
 				</form>
 			</td>
 		</tr>

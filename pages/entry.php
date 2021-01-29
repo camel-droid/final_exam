@@ -38,7 +38,9 @@
 			</tr>
 			<tr class="buttons">
 				<td colspan="2">
-					<button formaction="confirm.php" formmethod="post" name="action" value="entry">確認画面へ</button>
+					<input type="hidden" name="action" value="entry" />
+					<input type="hidden" name="mode" value="confirm" />
+					<button formaction="index.php" formmethod="post">確認画面へ</button>
 				</td>
 			</tr>
 		</table>
